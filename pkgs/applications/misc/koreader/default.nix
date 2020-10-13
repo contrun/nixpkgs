@@ -3,7 +3,7 @@
 , makeWrapper
 , dpkg
 , luajit
-, gtk3-x11
+, gtk3
 , SDL2
 , glib
 , noto-fonts
@@ -21,14 +21,18 @@ in stdenv.mkDerivation rec {
 
   sourceRoot = ".";
   nativeBuildInputs = [ makeWrapper dpkg ];
-  buildInputs = [ luajit gtk3-x11 SDL2 glib ];
+  buildInputs = [ luajit gtk3 SDL2 glib ];
   unpackCmd = "dpkg-deb -x ${src} .";
 
   dontConfigure = true;
   dontBuild = true;
 
+  preInstall = ''
+    mkdir -p "$out"
+  '';
+
   installPhase = ''
-    mkdir -p $out
+    runHook preInstall
     cp -R usr/* $out/
     cp ${luajit}/bin/luajit $out/lib/koreader/luajit
     find $out -xtype l -delete
@@ -36,8 +40,12 @@ in stdenv.mkDerivation rec {
         ln -s "$i" $out/lib/koreader/fonts/noto/
     done
     ln -s "${font-droid}/share/fonts/opentype/NerdFonts/Droid Sans Mono Nerd Font Complete Mono.otf" $out/lib/koreader/fonts/droid/DroidSansMono.ttf
+    runHook postInstall
+  '';
+
+  postInstall = ''
     wrapProgram $out/bin/koreader --prefix LD_LIBRARY_PATH : ${
-      stdenv.lib.makeLibraryPath [ gtk3-x11 SDL2 glib ]
+      stdenv.lib.makeLibraryPath [ gtk3 SDL2 glib ]
     }
   '';
 
@@ -46,7 +54,7 @@ in stdenv.mkDerivation rec {
     description =
       "An ebook reader application supporting PDF, DjVu, EPUB, FB2 and many more formats, running on Cervantes, Kindle, Kobo, PocketBook and Android devices";
     platforms = intersectLists platforms.x86_64 platforms.linux;
-    license = licenses.agpl3;
+    license = licenses.agpl3Only;
     maintainers = [ maintainers.contrun ];
   };
 }
