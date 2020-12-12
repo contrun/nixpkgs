@@ -23170,6 +23170,8 @@ in
 
   nvi = callPackage ../applications/editors/nvi { };
 
+  nvimpager = callPackage ../tools/misc/nvimpager { };
+
   nvpy = callPackage ../applications/editors/nvpy { };
 
   obconf = callPackage ../tools/X11/obconf {
