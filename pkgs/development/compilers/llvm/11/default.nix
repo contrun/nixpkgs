@@ -6,7 +6,7 @@
 }:
 
 let
-  release_version = "11.0.1";
+  release_version = "11.1.0";
   candidate = ""; # empty or "rcN"
   dash-candidate = lib.optionalString (candidate != "") "-${candidate}";
   version = "${release_version}${dash-candidate}"; # differentiating these (variables) is important for RCs
@@ -17,7 +17,7 @@ let
     inherit sha256;
   };
 
-  clang-tools-extra_src = fetch "clang-tools-extra" "1j8n6n4l54k2lrdxh266y1fl4z8vy5dc76wsf0csk5n3ikfi38ic";
+  clang-tools-extra_src = fetch "clang-tools-extra" "18n1w1hkv931xzq02b34wglbv6zd6sd0r5kb8piwvag7klj7qw3n";
 
   tools = lib.makeExtensible (tools: let
     callPackage = newScope (tools // { inherit stdenv cmake libxml2 python3 isl release_version version fetch; });
@@ -28,8 +28,6 @@ let
       ln -s "${targetLlvmLibraries.compiler-rt.out}/lib" "$rsrc/lib"
       ln -s "${targetLlvmLibraries.compiler-rt.out}/share" "$rsrc/share"
       echo "-resource-dir=$rsrc" >> $out/nix-support/cc-cflags
-    '' + lib.optionalString (stdenv.targetPlatform.isLinux && !(stdenv.targetPlatform.useLLVM or false)) ''
-      echo "--gcc-toolchain=${gccForLibs}" >> $out/nix-support/cc-cflags
     '';
   in {
 

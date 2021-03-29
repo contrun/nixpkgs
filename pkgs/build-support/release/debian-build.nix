@@ -2,9 +2,8 @@
 # that contains a Debian-like (i.e. dpkg-based) OS.
 
 { name ? "debian-build"
-, lib
 , diskImage
-, src, stdenv, vmTools, checkinstall
+, src, lib, stdenv, vmTools, checkinstall
 , fsTranslation ? false
 , # Features provided by this package.
   debProvides ? []

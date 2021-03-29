@@ -1,8 +1,9 @@
-{ stdenv, mkDerivation, lib, fetchFromGitHub, cmake, pkg-config
+{ mkDerivation, lib, fetchFromGitHub, cmake, pkg-config
 , alsaLib, freetype, libjack2, lame, libogg, libpulseaudio, libsndfile, libvorbis
 , portaudio, portmidi, qtbase, qtdeclarative, qtgraphicaleffects
 , qtquickcontrols2, qtscript, qtsvg, qttools
 , qtwebengine, qtxmlpatterns
+, nixosTests
 }:
 
 mkDerivation rec {
@@ -39,6 +40,8 @@ mkDerivation rec {
     qtbase qtdeclarative qtgraphicaleffects qtquickcontrols2
     qtscript qtsvg qttools qtwebengine qtxmlpatterns
   ];
+
+  passthru.tests = nixosTests.musescore;
 
   meta = with lib; {
     description = "Music notation and composition software";

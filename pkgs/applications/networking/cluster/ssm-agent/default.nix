@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, buildGoPackage, bash, makeWrapper }:
+{ lib, fetchFromGitHub, buildGoPackage, bash, makeWrapper }:
 
 buildGoPackage rec {
   pname   = "amazon-ssm-agent";
@@ -14,7 +14,7 @@ buildGoPackage rec {
     "agent/cli-main"
   ];
 
-  buildInputs = [ makeWrapper ];
+  nativeBuildInputs = [ makeWrapper ];
 
   src = fetchFromGitHub {
     rev    = version;

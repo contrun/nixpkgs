@@ -1,4 +1,4 @@
-{ lib, stdenv, buildPythonPackage, fetchPypi, isPyPy
+{ lib, buildPythonPackage, fetchPypi, isPyPy
 , dnspython
 , geoip2
 , ipython
@@ -6,7 +6,6 @@
 , pyenchant
 , pygeoip
 , pytestCheckHook
-, python
 , pytz
 , sqlalchemy
 , xmltodict

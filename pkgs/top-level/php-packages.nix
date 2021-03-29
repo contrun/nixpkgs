@@ -16,7 +16,7 @@ lib.makeScope pkgs.newScope (self: with self; {
   # Wrap mkDerivation to prepend pname with "php-" to make names consistent
   # with how buildPecl does it and make the file easier to overview.
   mkDerivation = { pname, ... }@args: pkgs.stdenv.mkDerivation (args // {
-    pname = "php-${pname}";
+    pname = "php-${php.version}-${pname}";
   });
 
   pcre' = if (lib.versionAtLeast php.version "7.3") then pcre2 else pcre;
@@ -29,7 +29,7 @@ lib.makeScope pkgs.newScope (self: with self; {
 
     composer = callPackage ../development/php-packages/composer { };
 
-    composer2 = callPackage ../development/php-packages/composer/2.0.nix { };
+    composer1 = callPackage ../development/php-packages/composer/1.x.nix { };
 
     php-cs-fixer = callPackage ../development/php-packages/php-cs-fixer { };
 
@@ -133,6 +133,8 @@ lib.makeScope pkgs.newScope (self: with self; {
     rdkafka = callPackage ../development/php-packages/rdkafka { };
 
     redis = callPackage ../development/php-packages/redis { };
+
+    smbclient = callPackage ../development/php-packages/smbclient { };
 
     sqlsrv = callPackage ../development/php-packages/sqlsrv { };
 
@@ -501,11 +503,15 @@ lib.makeScope pkgs.newScope (self: with self; {
         doCheck = false; }
       { name = "xmlreader";
         buildInputs = [ libxml2 ];
-        configureFlags = [ "--enable-xmlreader CFLAGS=-I../.." ]
+        internalDeps = [ php.extensions.dom ];
+        NIX_CFLAGS_COMPILE = [ "-I../.." "-DHAVE_DOM" ];
+        configureFlags = [ "--enable-xmlreader" ]
           # Required to build on darwin.
           ++ lib.optional (lib.versionOlder php.version "7.4") [ "--with-libxml-dir=${libxml2.dev}" ]; }
       { name = "xmlrpc";
         buildInputs = [ libxml2 libiconv ];
+        # xmlrpc was unbundled in 8.0 https://php.watch/versions/8.0/xmlrpc
+        enable = lib.versionOlder php.version "8.0";
         configureFlags = [ "--with-xmlrpc" ]
           # Required to build on darwin.
           ++ lib.optional (lib.versionOlder php.version "7.4") [ "--with-libxml-dir=${libxml2.dev}" ]; }
@@ -516,7 +522,7 @@ lib.makeScope pkgs.newScope (self: with self; {
           ++ lib.optional (lib.versionOlder php.version "7.4") [ "--with-libxml-dir=${libxml2.dev}" ]; }
       { name = "xsl";
         buildInputs = [ libxslt libxml2 ];
-        doCheck = !(lib.versionOlder php.version "7.4");
+        doCheck = lib.versionOlder php.version "8.0";
         configureFlags = [ "--with-xsl=${libxslt.dev}" ]; }
       { name = "zend_test"; }
       { name = "zip";

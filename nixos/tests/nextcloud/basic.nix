@@ -15,7 +15,7 @@ in {
         echo "http://nextcloud/remote.php/webdav/ ${adminuser} ${adminpass}" > /tmp/davfs2-secrets
         chmod 600 /tmp/davfs2-secrets
       '';
-      fileSystems = pkgs.lib.mkVMOverride {
+      virtualisation.fileSystems = {
         "/mnt/dav" = {
           device = "http://nextcloud/remote.php/webdav/";
           fsType = "davfs";
@@ -42,6 +42,7 @@ in {
           enable = true;
           startAt = "20:00";
         };
+        phpExtraExtensions = all: [ all.bz2 ];
       };
 
       environment.systemPackages = [ cfg.services.nextcloud.occ ];

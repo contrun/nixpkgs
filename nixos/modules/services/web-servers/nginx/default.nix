@@ -79,6 +79,8 @@ let
       include ${pkgs.mailcap}/etc/nginx/mime.types;
       include ${cfg.package}/conf/fastcgi.conf;
       include ${cfg.package}/conf/uwsgi_params;
+
+      default_type application/octet-stream;
   '';
 
   configFile = pkgs.writers.writeNginxConfig "nginx.conf" ''
@@ -404,6 +406,7 @@ in
 
       logError = mkOption {
         default = "stderr";
+        type = types.str;
         description = "
           Configures logging.
           The first parameter defines a file that will store the log. The

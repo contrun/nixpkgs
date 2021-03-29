@@ -1,17 +1,17 @@
-{ lib, stdenv, buildGoModule, fetchFromGitHub, nixosTests }:
+{ lib, buildGoModule, fetchFromGitHub, nixosTests }:
 
 buildGoModule rec {
   pname = "minio";
-  version = "2021-01-16T02-19-44Z";
+  version = "2021-02-24T18-44-45Z";
 
   src = fetchFromGitHub {
     owner = "minio";
     repo = "minio";
     rev = "RELEASE.${version}";
-    sha256 = "sha256-eYOarXgx5+rXCw2gMzrH1vVSsIdN4WrHrAUnnCcLtN8=";
+    sha256 = "sha256-htrIRZXpr3V7GoeldeULndSfJNMmLKPVOimg3l+UisA=";
   };
 
-  vendorSha256 = "sha256-6p/DBgHawsT5PjpzwjrKgZfWm5Z6v1ozMWzGpEiB2jM=";
+  vendorSha256 = "sha256-m2Nv3OcPq/qc+4Cu/JUut59fZTDZwJn9gyG4jQ5n6Pg=";
 
   doCheck = false;
 
