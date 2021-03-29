@@ -17,7 +17,7 @@
 
 buildPythonPackage rec {
   pname = "onnx";
-  version = "1.8.0";
+  version = "1.8.1";
 
   # Due to Protobuf packaging issues this build of Onnx with Python 2 gives
   # errors on import.
@@ -26,7 +26,7 @@ buildPythonPackage rec {
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "5f787fd3ce1290e12da335237b3b921152157e51aa09080b65631b3ce3fcc50c";
+    sha256 = "9d65c52009a90499f8c25fdfe5acda3ac88efe0788eb1d5f2575a989277145fb";
   };
 
   nativeBuildInputs = [ cmake ];
@@ -46,7 +46,8 @@ buildPythonPackage rec {
   ];
 
   postPatch = ''
-    patchShebangs tools/protoc-gen-mypy.py
+    chmod +x tools/protoc-gen-mypy.sh.in
+    patchShebangs tools/protoc-gen-mypy.sh.in tools/protoc-gen-mypy.py
   '';
 
   preBuild = ''
