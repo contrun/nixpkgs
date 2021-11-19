@@ -13,6 +13,13 @@ in
     '';
     type = types.attrsOf (types.submodule ({ config, name, ... }: {
       options = {
+        extraPackages = mkOption {
+          default = [ ];
+          description = "Packages that are available in the PATH of restic systemd unit.";
+          example = "[ pkgs.fd ]";
+          type = types.listOf types.package;
+        };
+
         passwordFile = mkOption {
           type = types.str;
           description = ''
@@ -253,7 +260,7 @@ in
           } // optionalAttrs (backup.rcloneConfig != null) (mapAttrs' (name: value:
             nameValuePair (rcloneAttrToConf name) (toRcloneVal value)
           ) backup.rcloneConfig);
-          path = [ pkgs.openssh ];
+          path = [ pkgs.openssh ] ++ backup.extraPackages;
           restartIfChanged = false;
           serviceConfig = {
             Type = "oneshot";
