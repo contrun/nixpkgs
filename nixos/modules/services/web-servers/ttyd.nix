@@ -32,6 +32,12 @@ in
     services.ttyd = {
       enable = mkEnableOption "ttyd daemon";
 
+      command = mkOption {
+        type = types.listOf types.str;
+        default = [ "${pkgs.shadow}/bin/login" ];
+        description = "Command to spawn in the ttyd session.";
+      };
+
       port = mkOption {
         type = types.port;
         default = 7681;
@@ -185,11 +191,11 @@ in
         PASSWORD=$(cat ${escapeShellArg cfg.passwordFile})
         ${pkgs.ttyd}/bin/ttyd ${lib.escapeShellArgs args} \
           --credential ${escapeShellArg cfg.username}:"$PASSWORD" \
-          ${pkgs.shadow}/bin/login
+          ${lib.escapeShellArgs cfg.command}
       ''
       else ''
         ${pkgs.ttyd}/bin/ttyd ${lib.escapeShellArgs args} \
-          ${pkgs.shadow}/bin/login
+          ${lib.escapeShellArgs cfg.command}
       '';
     };
   };
